@@ -94,6 +94,8 @@ A good way to store password is to **store the HASH of the password**
 
 * Cryptographic hash functions
 
+* Two different hash can't collide so easily
+
 * > A 1-way function $f$ is a function that is **relatively easy to compute but hard to reverse.**
 
   * Given an input $x$ and a 1-way function $f$, $f(x)=y$ . $y$ should follow the [Avalanche Effect](https://en.wikipedia.org/wiki/Avalanche_effect). $y$ is called **digest**.
@@ -214,3 +216,232 @@ it's a Graph between **Relative Security Level** and **Solutions**.
 2. Checks for *Cookies, geoloc*, ...
 
 > Very effective.
+
+## 25/09/2019
+
+### Cryptography 
+
+_Something about story(turing, rsa...)_
+
+Some definitions:
+
+* > **Cryptography**: Branch of mathematics, it's a science which studies the secret writing.
+  > Crypto + graphy.
+
+* > **Cryptanalysis**: science and study of methods of breaking cyphers.
+
+* > **Cryptology**: Cryptography and cryptanalysis
+
+Today definition:
+
+> **Cryptography** is the study of the mathematical tecniques related to aspects of the information security, such as:
+>
+> * Confidentiality;
+> * Data Integrity;
+> * Entity Authentication;
+> * Data Origin Authentication.
+
+Cryptography help us to :
+
+* **Securing comunications**:
+  * If someone tries to intercept an encrypted comunication, he can't read the information passing through.
+* **Keep integrity**:
+  * If data were somehow altered we can't really decypher them.
+* **Have confidentiality**:
+  * If data are encrypted, an attacker can't read them.
+* **Authenticate**:
+  * Authenticating a message using asymmetric encryption
+
+#### Cryptosystem
+
+> **Cryptosystem**: A cryptosystem is a 5-tuple $(E,D,M,K,C)$ where
+>
+> * **E** is an ecryption algorithm;
+> * **D** is a decryption algorithm;
+> * **M** is the set of plaintexts;
+> * **K** is the set of keys;
+> * **C** is the ciphertexts.
+
+E and D can be characterized as functions:
+
+* $E: M\text{x}K\to C$
+* $D: M\text{x}K\to M$
+
+TL;DR : $D(E(n,k),k)=m$
+
+> **Kerckhoffs' principle:** Do not rely on the secrecy to algorithms; the **key should be the only secret that needs protection**.
+
+##### Keys
+
+> A **key** is an input to a cryptographic algorithm used to obtain confidentiality, integrity, authenticity or other property over some data.
+
+The security of a system depends on keeping the **key secret** to some parties.
+
+* The **keyspace** is the set of all possible keys.
+* **Entropy** is a measure of **variance in keys**, measured in bits.
+
+Keys can be stored:
+
+* In a secure place:
+  * Passwords, disk keyrings,...
+  * TPM, Secure co-processor, smartcard...
+* Public:
+  * Certificates
+
+A secure cryptography uses:
+
+* A strong random generator:
+
+  * Based on a **seed**
+  * $f(\text{seed})=\text{random}$
+  * the function shouldn't repeat the `random` output(it should be unique).
+  * The seed should be secure.
+
+* The secret key should be **computationally-hard to break** (*to generate from the public key/message*) (from **public** $\to$ **private**)
+
+* > **Brute-force approach** : trying every possible key until an intelligible translation ofthe ciphertext into plaintext is obtained
+  >
+  > * On average, half of all possible keys must be tried to achieve success
+
+##### Keys distribution
+
+We need to destribute a key without even if someone does **MITM Attack**
+
+> **MITM ATTACK**: Man in the middle of the conversation, who can read everything through there.
+
+We have two type of **cryptography**:
+
+* Symmetric Encryption (One key to cypher, the same key to decypher)
+* Asymmetric Encryption (One key to cypher, one different key to decypher)
+
+> The security of the encryption is on the private key. If we lose the private key, we kill our security.
+
+We shouldn't rely only on encryption.
+
+$E(key,plaintext) = ciphertext$
+$D(key,ciphertext) = plaintext$
+
+#### Transformations
+
+Two types:
+
+* **Substitution**: each element in the plaintext is mapped into another element. (letter **replaced** bt other letters)
+* **Transposition**: elements in the plaintext are rearranged.(**same** letters, different order)
+
+> we can't lose information.
+
+##### Substitution
+
+![1569429164449](assets/1569429164449.png)
+
+> **A substitution cip
+>
+> her** is a method of encrypting by which units of plaintext are replaced with ciphertext, according to a **fixed** system.
+
+*  The key is the substitution
+* The "units" can be:
+  * letters
+  * words
+  * phrases
+  * ...
+* The receiver gets the plaintext by **inverse substitution**
+
+* Example:
+* ![1569429283236](assets/1569429283236.png)
+
+**Rot K**:
+
+$e(x)=(x+k)(\mod 26)$
+
+$d(x)=(x-k)(\mod26)$
+
+
+
+This is not **secure**, we can easily **bruteforce** the caesar cypher.
+
+We can also try to **guess the language of the message**, using **distribution of the letters**. In english:
+
+* 'e' is 13% of the times present
+* 'z' is the less frequent, 1% of the times.
+
+##### Trasposition
+
+![1569429513618](assets/1569429513618.png)
+
+* The key is the permutation of symbols.
+* Example:
+  * ![1569429569069](assets/1569429569069.png)
+
+#### Modern encryption
+
+Modern encryption tecniques:
+
+* **Stream encryption**
+* **Block encryption**
+* **Public Key encryption**
+
+Stream and block$\to$ Symmetric encryption
+
+Public-key $\to$ Asymmetric encryption
+
+##### Symmetric key Cryptography
+
+$D( k, E( k, p ) ) = p$
+
+![1569429723861](assets/1569429723861.png)
+
+> Key management determines **who can access data.**
+
+Types:
+
+* **Stream cyphers:** Encrypt short sequences of data under a changing key stream.
+
+  * Security relies on key stream generator.
+  * Encryption is simple.
+
+* **Block cyphers**: Encrypt sequences of "long" data blocks without changing the key.
+
+  * A block of plaintext is treated as a whole and used to produce a ciphertext block of equal length
+  *  A block cipher breaks the message $(M)$ into successive blocks $M1, M2, M3,..., Mn$, and enciphers each Mi with the same key $k$
+
+  Used in:
+
+  * AES and DES
+
+##### Asymmetric Key Cryptography
+
+![1569430074360](assets/1569430074360.png)
+
+
+
+
+
+Two modes:
+
+* **Public key** encrypt, **Private key** decrypt (Security)
+  * We can relies on this encryption mode to have **integrity** of data:
+    1. HASH the message;
+    2. SIGN the hash with our public key;
+    3. When the guy will receive our message, he will **decrypt the hash** with his **private key**
+    4. Then he **HASH** the message and check if his hash is the same as the **decrypted hash**.
+    5. If it's the same OK.
+  * Encrypt: $e(m,k^B_P)=c$
+  * Decrypt: $d(c,k^B_S)=m$
+
+* **Public key** decrypt , **Private key** encrypt (Authentication)
+  * Used by HTTPS Certificates, it authenticates the website and the connection to the website.
+  * Encrypt: $e(m,k^B_S)=c$
+  * Decrypt: $d(c,k^B_P)=m$
+
+#### Differences
+
+|          Symmetric          |                          Asymmetric                          |
+| :-------------------------: | :----------------------------------------------------------: |
+| Key distribution is harder. | Key distribution is not a problem, just send the public key. |
+|           Faster            |                   Slower(RSA for example)                    |
+|        Hard to crack        |                       Harder to crack                        |
+
+TODO:
+
+* Check if it's deprecated;
+* Use strong cyphers. 
